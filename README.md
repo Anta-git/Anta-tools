@@ -1,4 +1,5 @@
 # Anta-tools
+Personal project hub built with:
  - React 19
  - TypeScript
  - Vite
