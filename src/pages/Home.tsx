@@ -1,26 +1,28 @@
 export default function Home() {
   return (
-    <div>
-      <h1 className="text-5xl mb-6">Hi! I'm Joshua, also known as @Antawoo online.</h1>
+    <div className="max-w-2xl mx-auto px-6 py-12">
+      <h1 className="text-5xl font-light tracking-tight mb-6">
+        Hi! I'm Joshua, also known as @Antawoo online.
+      </h1>
       
-      <p className="text-xl mb-12 leading-relaxed">
+      <p className="text-xl mb-12 text-zinc-400">
         Welcome to my tiny corner of the internet.<br />
         I make small apps, tools, and Unity WebGL games for fun.
       </p>
 
       <div className="space-y-8 text-lg">
         <p>
-          <a href="/games" className="text-sky-400 hover:underline">
+          <a href="/games" className="text-sky-400 hover:text-sky-300 hover:underline transition-colors">
             Games
           </a> — playable Unity experiments I've built
         </p>
         <p>
-          <a href="/apps" className="text-sky-400 hover:underline">
+          <a href="/apps" className="text-sky-400 hover:text-sky-300 hover:underline transition-colors">
             Apps & Tools
           </a> — small web utilities and mini-projects
         </p>
         <p>
-          <a href="/about" className="text-sky-400 hover:underline">
+          <a href="/about" className="text-sky-400 hover:text-sky-300 hover:underline transition-colors">
             About
           </a>
         </p>

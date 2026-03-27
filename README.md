@@ -5,3 +5,4 @@ Personal project hub built with:
  - Vite
  - Deployed using Cloudflare Pages & custom domain
  - Unity WebGL hosting
+ - Tailwind
