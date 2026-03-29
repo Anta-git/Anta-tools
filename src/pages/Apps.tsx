@@ -1,11 +1,34 @@
+import { Link } from 'react-router-dom';
+
 export default function Apps() {
   return (
     <div>
-      <h2 className="text-3xl mb-8">Apps & Tools</h2>
-      <p className="mb-8">Here are some small web utilities and mini-projects I've built.</p>
+      <h1 className="text-4xl font-light mb-6">Apps & Tools</h1>
+      <p className="text-zinc-400 mb-10">
+        Small interactive web tools and experiments I've built.
+      </p>
 
-      <div className="space-y-6 text-lg">
+      <div className="space-y-8 text-lg">
+        <div>
+          <Link 
+            to="/apps/sorting" 
+            className="text-sky-400 hover:text-sky-300 hover:underline transition-colors"
+          >
+            Sorting Visuals
+          </Link>
+          <p className="text-sm text-zinc-500 mt-1">
+            Interactive visualizations of sorting algorithms (Bubble Sort + more coming)
+          </p>
+        </div>
 
+        {/* Add more tools here later */}
+        {/* 
+        <div>
+          <Link to="/apps/pathfinding" className="text-sky-400 hover:text-sky-300 hover:underline">
+            Pathfinding Visualizer
+          </Link>
+        </div>
+        */}
       </div>
     </div>
   );
