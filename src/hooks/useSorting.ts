@@ -1,12 +1,14 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { bubbleSortSteps } from "../components/sorting/bubbleSort";
+import { sortRegistry } from "../components/sorting/sortRegistry";
+import type { SortAlgorithmKey } from "../components/sorting/sortRegistry";
 import type { SortStep } from "../components/sorting/bubbleSort";
 import type { Bar } from "../types/sorting";
 
 export function useSorting() {
   const [bars, setBars] = useState<Bar[]>([]);
   const [isSorting, setIsSorting] = useState(false);
-  const [speed, setSpeed] = useState(50); // ms between steps
+  const [speed, setSpeed] = useState(50);
+  const [selectedAlgorithm, setSelectedAlgorithm] = useState<SortAlgorithmKey>("bubble");
   const speedRef = useRef(speed);
   const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -27,19 +29,20 @@ export function useSorting() {
     setBars(newBars);
   }, []);
 
-  const startSort = async () => {
+  const startSort = useCallback(async () => {
     if (isSorting) return;
     setIsSorting(true);
 
     abortControllerRef.current = new AbortController();
     const { signal } = abortControllerRef.current;
 
-    const gen: Generator<SortStep> = bubbleSortSteps(bars.map((b) => b.value));
+    // Look up the selected algorithm from the registry
+    const { fn } = sortRegistry[selectedAlgorithm];
+    const gen: Generator<SortStep> = fn(bars.map((b) => b.value));
 
     for (const step of gen) {
       if (signal.aborted) break;
 
-      // Translate the SortStep back into Bar[] shape for display
       setBars(
         step.values.map((value, i) => ({
           value,
@@ -53,7 +56,7 @@ export function useSorting() {
     }
 
     setIsSorting(false);
-  };
+  }, [isSorting, selectedAlgorithm, bars]);
 
   const stopSort = () => {
     abortControllerRef.current?.abort();
@@ -63,8 +66,18 @@ export function useSorting() {
   // Generate the initial array on mount
   useEffect(() => {
     const t = setTimeout(generateArray, 0);
-    return () => clearTimeout(t);
+    return () => { clearTimeout(t); };
   }, [generateArray]);
 
-  return { bars, isSorting, speed, setSpeed, generateArray, startSort, stopSort };
+  return {
+    bars,
+    isSorting,
+    speed,
+    setSpeed,
+    selectedAlgorithm,
+    setSelectedAlgorithm,
+    generateArray,
+    startSort,
+    stopSort,
+  };
 }

@@ -1,7 +1,19 @@
 import { useSorting } from "../hooks/useSorting";
+import { sortRegistry } from "../components/sorting/sortRegistry";
+import type { SortAlgorithmKey } from "../components/sorting/sortRegistry";
 
 export default function Sorting() {
-  const { bars, isSorting, speed, setSpeed, generateArray, startSort, stopSort } = useSorting();
+  const {
+    bars,
+    isSorting,
+    speed,
+    setSpeed,
+    selectedAlgorithm,
+    setSelectedAlgorithm,
+    generateArray,
+    startSort,
+    stopSort,
+  } = useSorting();
 
   const barWidth = 12;
   const maxHeight = 300;
@@ -10,7 +22,7 @@ export default function Sorting() {
     <div className="max-w-4xl mx-auto px-6 py-12">
       <h1 className="text-4xl font-light mb-4">Sorting Visuals</h1>
       <p className="text-zinc-400 mb-10">
-        Watch how sorting algorithms work step by step. Starting with Bubble Sort.
+        Watch how sorting algorithms work step by step.
       </p>
 
       {/* Controls */}
@@ -36,6 +48,22 @@ export default function Sorting() {
         >
           {isSorting ? "Sorting..." : "Start Sort"}
         </button>
+
+        {/* Algorithm selector — add entries to sortRegistry.ts to populate this */}
+        <select
+          value={selectedAlgorithm}
+          onChange={(e) => { setSelectedAlgorithm(e.target.value as SortAlgorithmKey); }}
+          disabled={isSorting}
+          className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-md transition-colors disabled:opacity-50 text-white"
+        >
+          {(Object.entries(sortRegistry) as [SortAlgorithmKey, { label: string }][]).map(
+            ([key, { label }]) => (
+              <option key={key} value={key}>
+                {label}
+              </option>
+            )
+          )}
+        </select>
 
         <div className="flex items-center gap-3 ml-auto">
           <label className="text-sm text-zinc-400">Speed:</label>
@@ -76,11 +104,10 @@ export default function Sorting() {
         </div>
       </div>
 
+      {/* Algorithm description — reads label from registry so it stays in sync */}
       <div className="mt-10 text-sm text-zinc-400 max-w-2xl">
         <p className="mb-4">
-          <strong>Bubble Sort</strong> — repeatedly steps through the list,
-          compares adjacent elements and swaps them if they are in the wrong
-          order.
+          <strong>{sortRegistry[selectedAlgorithm].label}</strong>
         </p>
         <p>Time Complexity: O(n²) • Space Complexity: O(1)</p>
       </div>

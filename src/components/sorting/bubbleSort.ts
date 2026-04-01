@@ -1,10 +1,12 @@
+import type { Bar } from "../../types/sorting";
+
 // Each step describes the full state of the array at one moment in the animation.
 // The component reads these steps one-by-one and applies them to React state.
 export interface SortStep {
-  values: number[];        // The array values at this step (may have been swapped)
+  values: Bar["value"][];              // The array values at this step (may have been swapped)
   comparing: [number, number] | null;  // Indices currently being compared (highlighted red)
   swapping:  [number, number] | null;  // Indices currently being swapped  (highlighted orange)
-  sorted: number[];        // Indices that are fully sorted (highlighted green)
+  sorted: number[];                    // Indices that are fully sorted (highlighted green)
 }
 
 /**
@@ -15,14 +17,13 @@ export interface SortStep {
  *
  * @param initialValues - A snapshot of the bar values to sort (plain numbers, no Bar objects)
  */
-export function* bubbleSortSteps(initialValues: number[]): Generator<SortStep> {
+export function* bubbleSortSteps(initialValues: Bar["value"][]): Generator<SortStep> {
   const values = [...initialValues]; // work on a copy, never mutate the input
   const n = values.length;
   const sorted: number[] = [];
 
   for (let i = 0; i < n - 1; i++) {
     for (let j = 0; j < n - i - 1; j++) {
-
       // Step 1: Highlight the two bars being compared
       yield {
         values: [...values],
