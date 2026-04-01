@@ -3,10 +3,14 @@ import { sortRegistry } from "../components/sorting/sortRegistry";
 import type { SortAlgorithmKey } from "../components/sorting/sortRegistry";
 import type { Bar, SortStep } from "../types/sorting";
 
+export const BAR_VALUE_MIN = 50;
+export const BAR_VALUE_MAX = 350;
+
 export function useSorting() {
   const [bars, setBars] = useState<Bar[]>([]);
   const [isSorting, setIsSorting] = useState(false);
   const [speed, setSpeed] = useState(50);
+  const [arraySize, setArraySize] = useState(30);
   const [selectedAlgorithm, setSelectedAlgorithm] = useState<SortAlgorithmKey>("bubble");
   const speedRef = useRef(speed);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -19,14 +23,15 @@ export function useSorting() {
   const generateArray = useCallback(() => {
     abortControllerRef.current?.abort(); // cancel any in-progress sort
     setIsSorting(false);
-    const newBars: Bar[] = Array.from({ length: 30 }, () => ({
-      value: Math.floor(Math.random() * 300) + 50,
+    const range = BAR_VALUE_MAX - BAR_VALUE_MIN;
+    const newBars: Bar[] = Array.from({ length: arraySize }, () => ({
+      value: Math.floor(Math.random() * range) + BAR_VALUE_MIN,
       isComparing: false,
       isSwapping: false,
       isSorted: false,
     }));
     setBars(newBars);
-  }, []);
+  }, [arraySize]);
 
   const startSort = useCallback(async () => {
     if (isSorting) return;
@@ -73,6 +78,8 @@ export function useSorting() {
     isSorting,
     speed,
     setSpeed,
+    arraySize,
+    setArraySize,
     selectedAlgorithm,
     setSelectedAlgorithm,
     generateArray,

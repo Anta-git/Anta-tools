@@ -1,4 +1,4 @@
-import { useSorting } from "../hooks/useSorting";
+import { useSorting, BAR_VALUE_MAX } from "../hooks/useSorting";
 import { sortRegistry } from "../components/sorting/sortRegistry";
 import type { SortAlgorithmKey } from "../components/sorting/sortRegistry";
 
@@ -8,6 +8,8 @@ export default function Sorting() {
     isSorting,
     speed,
     setSpeed,
+    arraySize,
+    setArraySize,
     selectedAlgorithm,
     setSelectedAlgorithm,
     generateArray,
@@ -15,7 +17,6 @@ export default function Sorting() {
     stopSort,
   } = useSorting();
 
-  const barWidth = 12;
   const maxHeight = 300;
 
   return (
@@ -66,10 +67,24 @@ export default function Sorting() {
         </select>
 
         <div className="flex items-center gap-3 ml-auto">
-          <label className="text-sm text-zinc-400">Delay:</label>
+          <label className="text-sm text-zinc-400">Size:</label>
           <input
             type="range"
             min="10"
+            max="100"
+            value={arraySize}
+            onChange={(e) => { setArraySize(Number(e.target.value)); generateArray(); }}
+            disabled={isSorting}
+            className="w-32 accent-sky-500 disabled:opacity-50"
+          />
+          <span className="text-sm w-8 text-zinc-400">{arraySize}</span>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <label className="text-sm text-zinc-400">Delay:</label>
+          <input
+            type="range"
+            min="1"
             max="300"
             value={speed}
             onChange={(e) => { setSpeed(Number(e.target.value)); }}
@@ -80,10 +95,10 @@ export default function Sorting() {
       </div>
 
       {/* Visualization Area */}
-      <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-8 flex justify-center items-end min-h-100">
-        <div className="flex items-end gap-1" style={{ height: maxHeight }}>
+      <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-8 min-h-100" style={{ height: maxHeight + 64 }}>
+        <div className="flex items-end gap-px w-full" style={{ height: maxHeight }}>
           {bars.map((bar, index) => {
-            const heightPercent = (bar.value / 350) * 100;
+            const heightPercent = (bar.value / BAR_VALUE_MAX) * 100;
             let color = "bg-zinc-400";
 
             if (bar.isSorted) color = "bg-emerald-500";
@@ -93,11 +108,8 @@ export default function Sorting() {
             return (
               <div
                 key={index}
-                className={`transition-all duration-75 rounded-t ${color}`}
-                style={{
-                  height: `${Math.round(heightPercent).toString()}%`,
-                  width: `${Math.round(barWidth).toString()}px`,
-                }}
+                className={`transition-all duration-75 rounded-t flex-1 min-w-0 ${color}`}
+                style={{ height: `${Math.round(heightPercent).toString()}%` }}
               />
             );
           })}
