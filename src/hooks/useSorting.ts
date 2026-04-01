@@ -1,8 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { sortRegistry } from "../components/sorting/sortRegistry";
 import type { SortAlgorithmKey } from "../components/sorting/sortRegistry";
-import type { SortStep } from "../components/sorting/bubbleSort";
-import type { Bar } from "../types/sorting";
+import type { Bar, SortStep } from "../types/sorting";
 
 export function useSorting() {
   const [bars, setBars] = useState<Bar[]>([]);
@@ -58,10 +57,10 @@ export function useSorting() {
     setIsSorting(false);
   }, [isSorting, selectedAlgorithm, bars]);
 
-  const stopSort = () => {
+  const stopSort = useCallback(() => {
     abortControllerRef.current?.abort();
     setIsSorting(false);
-  };
+  }, []);
 
   // Generate the initial array on mount
   useEffect(() => {

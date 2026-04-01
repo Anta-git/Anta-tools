@@ -66,7 +66,7 @@ export default function Sorting() {
         </select>
 
         <div className="flex items-center gap-3 ml-auto">
-          <label className="text-sm text-zinc-400">Speed:</label>
+          <label className="text-sm text-zinc-400">Delay:</label>
           <input
             type="range"
             min="10"
@@ -109,7 +109,8 @@ export default function Sorting() {
         <p className="mb-4">
           <strong>{sortRegistry[selectedAlgorithm].label}</strong>
         </p>
-        <p>Time Complexity: O(n²) • Space Complexity: O(1)</p>
+        <p>Time Complexity: {sortRegistry[selectedAlgorithm].timeComplexity} • Space Complexity: {sortRegistry[selectedAlgorithm].spaceComplexity}</p>
+        <p>-Assuming worse case scenario</p>
       </div>
     </div>
   );

@@ -1,15 +1,18 @@
 import { bubbleSortSteps } from "./bubbleSort";
-import type { SortStep } from "./bubbleSort";
-import type { Bar } from "../../types/sorting";
+import type { Bar, SortStep } from "../../types/sorting";
 
 export interface SortAlgorithm {
   label: string;
+  timeComplexity: string;
+  spaceComplexity: string;
   fn: (values: Bar["value"][]) => Generator<SortStep>;
 }
 
 export const sortRegistry = {
   bubble: {
     label: "Bubble Sort",
+    timeComplexity: "O(n²)",
+    spaceComplexity: "O(1)",
     fn: bubbleSortSteps,
   },
   // To add a new algorithm:
