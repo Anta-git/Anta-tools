@@ -10,6 +10,8 @@ export default function Sorting() {
     setSpeed,
     arraySize,
     setArraySize,
+    isMuted,
+    setIsMuted,
     selectedAlgorithm,
     setSelectedAlgorithm,
     generateArray,
@@ -48,6 +50,12 @@ export default function Sorting() {
           className="px-6 py-2 bg-sky-600 hover:bg-sky-500 rounded-md transition-colors disabled:opacity-50 font-medium"
         >
           {isSorting ? "Sorting..." : "Start Sort"}
+        </button>
+        <button
+          onClick={() => { setIsMuted((m) => !m); }}
+          className="px-6 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-md transition-colors"
+        >
+          {isMuted ? "Unmute" : "Mute"}
         </button>
 
         {/* Algorithm selector — add entries to sortRegistry.ts to populate this */}
@@ -101,7 +109,8 @@ export default function Sorting() {
             const heightPercent = (bar.value / BAR_VALUE_MAX) * 100;
             let color = "bg-zinc-400";
 
-            if (bar.isSorted) color = "bg-emerald-500";
+            if (bar.isCelebrating) color = "bg-yellow-400";
+            else if (bar.isSorted) color = "bg-emerald-500";
             else if (bar.isSwapping) color = "bg-orange-500";
             else if (bar.isComparing) color = "bg-rose-500";
 

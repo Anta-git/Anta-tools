@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { sortRegistry } from "../components/sorting/sortRegistry";
 import type { SortAlgorithmKey } from "../components/sorting/sortRegistry";
 import type { Bar, SortStep } from "../types/sorting";
+import { playTone } from "../utils/audio";
 
 export const BAR_VALUE_MIN = 50;
 export const BAR_VALUE_MAX = 350;
@@ -12,8 +13,14 @@ export function useSorting() {
   const [speed, setSpeed] = useState(50);
   const [arraySize, setArraySize] = useState(30);
   const [selectedAlgorithm, setSelectedAlgorithm] = useState<SortAlgorithmKey>("bubble");
+  const [isMuted, setIsMuted] = useState(false);
   const speedRef = useRef(speed);
+  const isMutedRef = useRef(isMuted);
   const abortControllerRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    isMutedRef.current = isMuted;
+  }, [isMuted]);
 
   // Keep speedRef in sync so changes mid-sort take effect immediately
   useEffect(() => {
@@ -29,6 +36,7 @@ export function useSorting() {
       isComparing: false,
       isSwapping: false,
       isSorted: false,
+      isCelebrating: false,
     }));
     setBars(newBars);
   }, [arraySize]);
@@ -42,7 +50,8 @@ export function useSorting() {
 
     // Look up the selected algorithm from the registry
     const { fn } = sortRegistry[selectedAlgorithm];
-    const gen: Generator<SortStep> = fn(bars.map((b) => b.value));
+    let finalValues: number[] = bars.map((b) => b.value);
+    const gen: Generator<SortStep> = fn(finalValues);
 
     for (const step of gen) {
       if (signal.aborted) break;
@@ -53,10 +62,31 @@ export function useSorting() {
           isComparing: step.comparing?.includes(i) ?? false,
           isSwapping: step.swapping?.includes(i) ?? false,
           isSorted: step.sorted.includes(i),
+          isCelebrating: false,
         })),
       );
 
+      if (!isMutedRef.current) {
+        const activeIndex = step.swapping?.[0] ?? step.comparing?.[0];
+        if (activeIndex !== undefined) playTone(step.values[activeIndex]);
+      }
+
+      finalValues = step.values;
       await new Promise((r) => setTimeout(r, speedRef.current));
+    }
+
+    if (!signal.aborted) {
+      // Celebration sweep: turn each bar gold left-to-right
+      for (let i = 0; i < finalValues.length; i++) {
+        if (signal.aborted) break;
+        setBars((prev) => {
+          const next = [...prev];
+          next[i] = { ...next[i], isSorted: false, isCelebrating: true };
+          return next;
+        });
+        if (!isMutedRef.current) playTone(finalValues[i]);
+        await new Promise((r) => setTimeout(r, 20));
+      }
     }
 
     setIsSorting(false);
@@ -80,6 +110,8 @@ export function useSorting() {
     setSpeed,
     arraySize,
     setArraySize,
+    isMuted,
+    setIsMuted,
     selectedAlgorithm,
     setSelectedAlgorithm,
     generateArray,

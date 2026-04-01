@@ -3,6 +3,7 @@ export interface Bar {
   isComparing: boolean;
   isSwapping: boolean;
   isSorted: boolean;
+  isCelebrating: boolean;
 }
 
 // Each step describes the full state of the array at one moment in the animation.
