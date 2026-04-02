@@ -1,30 +1,44 @@
+import { Link } from "react-router-dom";
+
 export default function Home() {
   return (
-    <div>
-      <h1 className="text-5xl mb-6">Hi! I'm Joshua, also known as @Antawoo online.</h1>
-      
-      <p className="text-xl mb-12 leading-relaxed">
-        Welcome to my tiny corner of the internet.<br />
-        I make small apps, tools, and Unity WebGL games for fun.
+    <div className="max-w-2xl mx-auto px-6 py-12">
+      <h1 className="text-5xl font-light tracking-tight mb-6">
+        Hi! I'm Joshua, also known as @Antawoo online.
+      </h1>
+
+      <p className="text-xl mb-12 text-zinc-400">
+        Welcome to my tiny corner of the internet.
+        <br />I make small apps, tools, and Unity WebGL games for fun.
       </p>
 
       <div className="space-y-8 text-lg">
         <p>
-          <a href="/games" className="text-sky-400 hover:underline">
+          <Link
+            to="/games"
+            className="text-sky-400 hover:text-sky-300 hover:underline transition-colors"
+          >
             Games
-          </a> — playable Unity experiments I've built
+          </Link>{" "}
+          — playable Unity experiments I've built
         </p>
         <p>
-          <a href="/apps" className="text-sky-400 hover:underline">
+          <Link
+            to="/apps"
+            className="text-sky-400 hover:text-sky-300 hover:underline transition-colors"
+          >
             Apps & Tools
-          </a> — small web utilities and mini-projects
+          </Link>{" "}
+          — small web utilities and mini-projects
         </p>
         <p>
-          <a href="/about" className="text-sky-400 hover:underline">
+          <Link
+            to="/about"
+            className="text-sky-400 hover:text-sky-300 hover:underline transition-colors"
+          >
             About
-          </a>
+          </Link>
         </p>
-
       </div>
     </div>
   );
