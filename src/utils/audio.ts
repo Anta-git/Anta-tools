@@ -2,11 +2,14 @@ import { BAR_VALUE_MAX, BAR_VALUE_MIN } from "../types/sorting";
 
 let ctx: AudioContext | null = null;
 
-//todo: This currently does not close the AudioContext. Navigating away from the page and back causes a new context to be created,
-// which may lead to increased memory usage over time. We should probably call ctx.close() when the component unmounts.
 function getContext(): AudioContext {
   ctx ??= new AudioContext();
+  if (ctx.state === "suspended") void ctx.resume();
   return ctx;
+}
+
+export function suspendAudio(): void {
+  void ctx?.suspend();
 }
 
 const FREQ_MIN = 150;

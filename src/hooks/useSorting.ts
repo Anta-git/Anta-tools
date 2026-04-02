@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { sortRegistry } from "../components/sorting/sortRegistry";
 import type { SortAlgorithmKey } from "../components/sorting/sortRegistry";
 import { BAR_VALUE_MAX, BAR_VALUE_MIN, type Bar, type SortStep } from "../types/sorting";
-import { playTone } from "../utils/audio";
+import { playTone, suspendAudio } from "../utils/audio";
 
 export function useSorting() {
   const [bars, setBars] = useState<Bar[]>([]);
@@ -93,6 +93,14 @@ export function useSorting() {
   const stopSort = useCallback(() => {
     abortControllerRef.current?.abort();
     setIsSorting(false);
+  }, []);
+
+  // Abort any in-progress sort and suspend audio on unmount
+  useEffect(() => {
+    return () => {
+      abortControllerRef.current?.abort();
+      suspendAudio();
+    };
   }, []);
 
   // Generate the initial array on mount
