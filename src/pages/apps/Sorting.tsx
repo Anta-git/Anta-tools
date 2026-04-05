@@ -1,7 +1,7 @@
-import { useSorting} from "../hooks/useSorting";
-import { sortRegistry } from "../components/sorting/sortRegistry";
-import type { SortAlgorithmKey } from "../components/sorting/sortRegistry";
-import { BAR_VALUE_MAX } from "../types/sorting";
+import { useSorting} from "../../hooks/useSorting";
+import { sortRegistry } from "../../components/sorting/sortRegistry";
+import type { SortAlgorithmKey } from "../../components/sorting/sortRegistry";
+import { BAR_VALUE_MAX } from "../../types/sorting";
 
 export default function Sorting() {
   const {

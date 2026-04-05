@@ -5,8 +5,8 @@ import Navbar from './components/Navbar';
 // Import your page components (create these files next)
 import Home from './pages/Home';
 import Games from './pages/Games';
-import Apps from './pages/Apps';
-import Sorting from './pages/Sorting';
+import Apps from './pages/apps/Apps';
+import Sorting from './pages/apps/Sorting';
 import About from './pages/About';
 
 function App() {
