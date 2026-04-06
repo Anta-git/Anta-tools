@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import Games from './pages/Games';
 import Apps from './pages/apps/Apps';
 import Sorting from './pages/apps/Sorting';
+import GridBattle from './pages/apps/GridBattle';
 import About from './pages/About';
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
           <Route path="/games" element={<Games />} />
           <Route path="/apps" element={<Apps />} />
           <Route path="/apps/sorting" element={<Sorting />} />
+          <Route path="/apps/grid-battle" element={<GridBattle />} />
           <Route path="/about" element={<About />} />
         </Routes>
       </main>

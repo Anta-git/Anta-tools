@@ -21,14 +21,17 @@ export default function Apps() {
           </p>
         </div>
 
-        {/* Add more tools here later */}
-        {/* 
         <div>
-          <Link to="/apps/pathfinding" className="text-sky-400 hover:text-sky-300 hover:underline">
-            Pathfinding Visualizer
+          <Link
+            to="/apps/grid-battle"
+            className="text-sky-400 hover:text-sky-300 hover:underline transition-colors"
+          >
+            Grid Battle
           </Link>
+          <p className="text-sm text-zinc-500 mt-1">
+            Four algorithms compete to claim the most territory on a grid
+          </p>
         </div>
-        */}
       </div>
     </div>
   );
