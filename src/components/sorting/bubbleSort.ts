@@ -3,13 +3,15 @@ import type { Bar, SortStep } from "../../types/sorting";
 /**
  * Pure generator function for Bubble Sort.
  *
- * This function has zero knowledge of React — it just yields SortStep objects.
- * The calling component decides how fast to consume them.
+ * Completely React-agnostic — yields SortStep snapshots that the
+ * consuming hook renders at whatever pace it chooses.
  *
- * @param initialValues - A snapshot of the bar values to sort (plain numbers, no Bar objects)
+ * Bubble Sort repeatedly walks the array comparing adjacent pairs.
+ * After each full pass the largest unsorted element "bubbles" to its
+ * final position at the end, so the inner loop shrinks by one each time.
  */
 export function* bubbleSortSteps(initialValues: Bar["value"][]): Generator<SortStep> {
-  const values = [...initialValues]; // work on a copy, never mutate the input
+  const values = [...initialValues]; // work on a copy — never mutate the caller's data
   const n = values.length;
   const sorted: number[] = [];
 

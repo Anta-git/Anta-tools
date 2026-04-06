@@ -1,3 +1,5 @@
+// Landing page — acts as the main entry point visitors see first.
+// Provides a brief intro and links to each major section of the site.
 import { Link } from "react-router-dom";
 
 export default function Home() {
@@ -12,6 +14,7 @@ export default function Home() {
         <br />I make small apps, tools, and Unity WebGL games for fun.
       </p>
 
+      {/* Quick-nav links to each section of the site */}
       <div className="space-y-8 text-lg">
         <p>
           <Link

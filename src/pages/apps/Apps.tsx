@@ -1,3 +1,5 @@
+// Index page for the Apps section — serves as a directory of all
+// interactive web tools. Each entry links to its dedicated page.
 import { Link } from 'react-router-dom';
 
 export default function Apps() {
@@ -10,8 +12,8 @@ export default function Apps() {
 
       <div className="space-y-8 text-lg">
         <div>
-          <Link 
-            to="/apps/sorting" 
+          <Link
+            to="/apps/sorting"
             className="text-sky-400 hover:text-sky-300 hover:underline transition-colors"
           >
             Sorting Visuals

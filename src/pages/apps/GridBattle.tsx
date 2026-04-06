@@ -1,18 +1,27 @@
+/**
+ * Grid Battle page — a territory-claiming visualization where four
+ * algorithms (BFS, DFS, Random Walk, Greedy) expand from their corners
+ * and compete to own the most cells.
+ *
+ * Currently sets up the grid and starting positions; algorithm execution
+ * is not yet wired in.
+ */
 import { useState, useCallback } from "react";
 import { GRID_SIZE, PLAYER_COLORS } from "../../types/gridBattle";
 import type { Cell, PlayerId } from "../../types/gridBattle";
 
+/** Build a fresh grid with all four players placed in their corners. */
 function createGrid(): Cell[][] {
   const grid: Cell[][] = Array.from({ length: GRID_SIZE }, () =>
     Array.from({ length: GRID_SIZE }, () => ({ owner: null, isWall: false }))
   );
 
-  // Place each player in a corner
+  // Each player starts in a different corner of the grid.
   const corners: [number, number][] = [
-    [0, 0],
-    [0, GRID_SIZE - 1],
-    [GRID_SIZE - 1, 0],
-    [GRID_SIZE - 1, GRID_SIZE - 1],
+    [0, 0],                           // Player 0 — top-left
+    [0, GRID_SIZE - 1],               // Player 1 — top-right
+    [GRID_SIZE - 1, 0],               // Player 2 — bottom-left
+    [GRID_SIZE - 1, GRID_SIZE - 1],   // Player 3 — bottom-right
   ];
 
   corners.forEach(([row, col], i) => {
@@ -22,6 +31,7 @@ function createGrid(): Cell[][] {
   return grid;
 }
 
+/** Map a cell's state to its Tailwind background color class. */
 function cellColor(cell: Cell): string {
   if (cell.isWall) return "bg-zinc-700";
   if (cell.owner !== null) return PLAYER_COLORS[cell.owner];
@@ -42,7 +52,7 @@ export default function GridBattle() {
         Four algorithms compete to claim the most territory on a grid.
       </p>
 
-      {/* Controls */}
+      {/* ── Controls ── */}
       <div className="flex flex-wrap gap-4 mb-10 items-center">
         <button
           onClick={resetGrid}
@@ -52,7 +62,9 @@ export default function GridBattle() {
         </button>
       </div>
 
-      {/* Grid */}
+      {/* ── Grid ──
+          Rendered as a CSS grid; each cell is a tiny colored square.
+          The 1px gap between cells gives the grid its visible lines. */}
       <div
         className="inline-grid gap-px bg-zinc-800 border border-zinc-700 rounded-lg p-1"
         style={{
