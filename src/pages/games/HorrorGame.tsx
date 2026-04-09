@@ -19,14 +19,13 @@ interface Room {
 }
 
 //TODO: Placeholders, ignore the error codes
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-interface Resources {
-  power: number;
-  light: number;
-  sanity: number;
-  salvage: number;
-  signal: number;
-}
+// interface Resources {
+//   power: number;
+//   light: number;
+//   sanity: number;
+//   salvage: number;
+//   signal: number;
+// }
 
 interface Log {
   time: string;
@@ -488,9 +487,10 @@ export default function HorrorGame() {
     signal: 12,
   });
   const [tick, setTick] = useState(0);
+
   //TODO: Placeholder, ignore the error codes
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [logs, setLogs] = useState<Log[]>([
+  // const [logs, setLogs] = useState<Log[]>([
+  const [logs] = useState<Log[]>([
     {
       time: "00:04:12",
       text: "Generator output nominal. Fuel at 34%.",
@@ -532,8 +532,8 @@ export default function HorrorGame() {
   ]);
   const [showScratchedText, setShowScratchedText] = useState(false);
   //TODO: Placeholders, ignore the error codes
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [hoverRoom, setHoverRoom] = useState(null);
+  // const [hoverRoom, setHoverRoom] = useState(null);
+
   const logRef = useRef(null);
 
   // Idle tick
