@@ -1,3 +1,5 @@
+/* Global stylesheet — Tailwind handles utility classes; we only
+   override base body styles that apply everywhere. */
 @import "tailwindcss";
 
 body {

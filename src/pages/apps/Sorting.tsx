@@ -1,7 +1,15 @@
-import { useSorting} from "../hooks/useSorting";
-import { sortRegistry } from "../components/sorting/sortRegistry";
-import type { SortAlgorithmKey } from "../components/sorting/sortRegistry";
-import { BAR_VALUE_MAX } from "../types/sorting";
+/**
+ * Sorting visualizer page.
+ *
+ * This component is purely presentational — all sorting state and logic
+ * live in the useSorting hook. The page renders controls (algorithm picker,
+ * speed/size sliders, play/stop buttons) and a bar-chart visualization
+ * that updates on every sort step.
+ */
+import { useSorting } from "../../hooks/useSorting";
+import { sortRegistry } from "../../components/sorting/sortRegistry";
+import type { SortAlgorithmKey } from "../../components/sorting/sortRegistry";
+import { BAR_VALUE_MAX } from "../../types/sorting";
 
 export default function Sorting() {
   const {
@@ -20,6 +28,7 @@ export default function Sorting() {
     stopSort,
   } = useSorting();
 
+  // Fixed pixel height for the bar chart container.
   const maxHeight = 300;
 
   return (
@@ -29,7 +38,7 @@ export default function Sorting() {
         Watch how sorting algorithms work step by step.
       </p>
 
-      {/* Controls */}
+      {/* ── Controls ── */}
       <div className="flex flex-wrap gap-4 mb-10 items-center">
         <button
           onClick={generateArray}
@@ -59,7 +68,7 @@ export default function Sorting() {
           {isMuted ? "Unmute" : "Mute"}
         </button>
 
-        {/* Algorithm selector — add entries to sortRegistry.ts to populate this */}
+        {/* Algorithm dropdown — populated automatically from the registry */}
         <select
           value={selectedAlgorithm}
           onChange={(e) => { setSelectedAlgorithm(e.target.value as SortAlgorithmKey); }}
@@ -75,6 +84,7 @@ export default function Sorting() {
           )}
         </select>
 
+        {/* Array size — regenerates immediately on change */}
         <div className="flex items-center gap-3 ml-auto">
           <label className="text-sm text-zinc-400">Size:</label>
           <input
@@ -89,6 +99,7 @@ export default function Sorting() {
           <span className="text-sm w-8 text-zinc-400">{arraySize}</span>
         </div>
 
+        {/* Step delay — adjustable mid-sort via ref (no restart needed) */}
         <div className="flex items-center gap-3">
           <label className="text-sm text-zinc-400">Delay:</label>
           <input
@@ -103,7 +114,10 @@ export default function Sorting() {
         </div>
       </div>
 
-      {/* Visualization Area */}
+      {/* ── Bar chart visualization ──
+          Each bar's height is proportional to its value. Colors indicate
+          the current operation: rose = comparing, orange = swapping,
+          emerald = sorted, yellow = celebration sweep. */}
       <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-8 min-h-100" style={{ height: maxHeight + 64 }}>
         <div className="flex items-end gap-px w-full" style={{ height: maxHeight }}>
           {bars.map((bar, index) => {
@@ -126,7 +140,7 @@ export default function Sorting() {
         </div>
       </div>
 
-      {/* Algorithm description — reads label from registry so it stays in sync */}
+      {/* Algorithm info pulled from the registry so it stays in sync */}
       <div className="mt-10 text-sm text-zinc-400 max-w-2xl">
         <p className="mb-4">
           <strong>{sortRegistry[selectedAlgorithm].label}</strong>

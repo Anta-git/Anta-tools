@@ -1,3 +1,5 @@
+// Index page for the Apps section — serves as a directory of all
+// interactive web tools. Each entry links to its dedicated page.
 import { Link } from 'react-router-dom';
 
 export default function Apps() {
@@ -10,8 +12,8 @@ export default function Apps() {
 
       <div className="space-y-8 text-lg">
         <div>
-          <Link 
-            to="/apps/sorting" 
+          <Link
+            to="/apps/sorting"
             className="text-sky-400 hover:text-sky-300 hover:underline transition-colors"
           >
             Sorting Visuals
@@ -21,14 +23,17 @@ export default function Apps() {
           </p>
         </div>
 
-        {/* Add more tools here later */}
-        {/* 
         <div>
-          <Link to="/apps/pathfinding" className="text-sky-400 hover:text-sky-300 hover:underline">
-            Pathfinding Visualizer
+          <Link
+            to="/apps/grid-battle"
+            className="text-sky-400 hover:text-sky-300 hover:underline transition-colors"
+          >
+            Grid Battle
           </Link>
+          <p className="text-sm text-zinc-500 mt-1">
+            Four algorithms compete to claim the most territory on a grid
+          </p>
         </div>
-        */}
       </div>
     </div>
   );

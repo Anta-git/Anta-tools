@@ -1,17 +1,19 @@
+// Landing page — acts as the main entry point visitors see first.
+// Provides a brief intro and links to each major section of the site.
 import { Link } from "react-router-dom";
 
 export default function Home() {
   return (
     <div className="max-w-2xl mx-auto px-6 py-12">
       <h1 className="text-5xl font-light tracking-tight mb-6">
-        Hi! I'm Joshua, also known as @Antawoo online.
+        Hi! I'm @Antawoo.
       </h1>
 
       <p className="text-xl mb-12 text-zinc-400">
-        Welcome to my tiny corner of the internet.
-        <br />I make small apps, tools, and Unity WebGL games for fun.
+        Welcome to my storage for various projects. Some may be broken.
       </p>
 
+      {/* Quick-nav links to each section of the site */}
       <div className="space-y-8 text-lg">
         <p>
           <Link
