@@ -5,16 +5,17 @@
  * declares every client-side route in one place. Adding a new page means
  * adding a single <Route> entry here and the corresponding page component.
  */
-import { Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
+import { Routes, Route } from "react-router-dom";
+import Navbar from "./components/Navbar";
 //todo: import Footer from './components/Footer';
 
-import Home from './pages/Home';
-import Games from './pages/Games';
-import Apps from './pages/apps/Apps';
-import Sorting from './pages/apps/Sorting';
-import GridBattle from './pages/apps/GridBattle';
-import About from './pages/About';
+import Home from "./pages/Home";
+import Games from "./pages/games/Games";
+import Apps from "./pages/apps/Apps";
+import Sorting from "./pages/apps/Sorting";
+import GridBattle from "./pages/apps/GridBattle";
+import HorrorGame from "./pages/games/HorrorGame";
+import About from "./pages/About";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="/apps" element={<Apps />} />
           <Route path="/apps/sorting" element={<Sorting />} />
           <Route path="/apps/grid-battle" element={<GridBattle />} />
+          <Route path="/games/horror-game" element={<HorrorGame />} />
           <Route path="/about" element={<About />} />
         </Routes>
       </main>
