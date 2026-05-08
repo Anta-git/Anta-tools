@@ -1,21 +1,28 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+
+const CITIES = [
+  { name: "Kansas City", lat: 38.88, lon: -94.35 },
+  { name: "St. Louis", lat: 38.63, lon: -90.2 },
+  { name: "Springfield", lat: 37.21, lon: -93.29 },
+  { name: "Columbia", lat: 38.95, lon: -92.33 },
+  { name: "Joplin", lat: 37.08, lon: -94.51 },
+  { name: "Jefferson City", lat: 38.58, lon: -92.17 },
+];
+
+interface CurrentWeather {
+  temperature: number;
+  windspeed: number;
+  weathercode: number;
+  is_day: number;
+}
 
 export default function Weather() {
-  const CITIES = [
-    { name: "Kansas City", lat: 38.88, lon: -94.35 },
-    { name: "St. Louis", lat: 38.63, lon: -90.2 },
-    { name: "Springfield", lat: 37.21, lon: -93.29 },
-    { name: "Columbia", lat: 38.95, lon: -92.33 },
-    { name: "Joplin", lat: 37.08, lon: -94.51 },
-    { name: "Jefferson City", lat: 38.58, lon: -92.17 },
-  ];
-
   const [selectedCity, setSelectedCity] = useState(CITIES[0]);
-  const [weatherData, setWeatherData] = useState(null);
+  const [weatherData, setWeatherData] = useState<CurrentWeather | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function fetchWeather(lat: number, lon: number) {
+  const fetchWeather = useCallback(async (lat: number, lon: number) => {
     setLoading(true);
     setError(null);
     try {
@@ -38,11 +45,11 @@ export default function Weather() {
     } finally {
       setLoading(false);
     }
-  }
+  }, []);
 
   useEffect(() => {
     fetchWeather(selectedCity.lat, selectedCity.lon);
-  }, [selectedCity]);
+  }, [selectedCity, fetchWeather]);
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-12">
@@ -52,15 +59,14 @@ export default function Weather() {
         Open-Meteo API.
       </p>
 
-      {/* ── Controls ── */}
       <div className="flex flex-wrap gap-4 mb-10 items-center">
         <select
-          value={selectedCity.name || CITIES[0].name}
+          value={selectedCity.name}
           onChange={(e) => {
             const city = CITIES.find((c) => c.name === e.target.value);
             if (city) setSelectedCity(city);
           }}
-          className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-md transition-colors disabled:opacity-50 text-white"
+          className="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-md transition-colors text-white"
         >
           {CITIES.map((city) => (
             <option key={city.name} value={city.name}>
@@ -68,11 +74,42 @@ export default function Weather() {
             </option>
           ))}
         </select>
-
-        {loading && <p>Loading...</p>}
-        {error && <p className="text-red-500">{error}</p>}
-        {weatherData && <pre> {JSON.stringify(weatherData, null, 2)}</pre>}
       </div>
+
+      {loading && (
+        <p className="text-zinc-400 animate-pulse">Loading weather data...</p>
+      )}
+
+      {error && <p className="text-red-500">{error}</p>}
+
+      {!loading && !error && weatherData && (
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="bg-zinc-800 rounded-xl p-6">
+            <p className="text-zinc-400 text-sm mb-1">Temperature</p>
+            <p className="text-4xl font-light">{weatherData.temperature}°F</p>
+          </div>
+          <div className="bg-zinc-800 rounded-xl p-6">
+            <p className="text-zinc-400 text-sm mb-1">Wind Speed</p>
+            <p className="text-4xl font-light">{weatherData.windspeed} mph</p>
+          </div>
+          <div className="bg-zinc-800 rounded-xl p-6">
+            <p className="text-zinc-400 text-sm mb-1">Condition</p>
+            <p className="text-4xl font-light">
+              {weatherCode(weatherData.weathercode)}
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
+}
+
+function weatherCode(code: number): string {
+  if (code === 0) return "Clear";
+  if (code <= 3) return "Cloudy";
+  if (code <= 48) return "Fog";
+  if (code <= 67) return "Rain";
+  if (code <= 77) return "Snow";
+  if (code <= 82) return "Showers";
+  return "Storm";
 }
