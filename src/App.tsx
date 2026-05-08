@@ -13,6 +13,7 @@ import Games from "./pages/games/Games";
 import Apps from "./pages/apps/Apps";
 import Sorting from "./pages/apps/Sorting";
 import GridBattle from "./pages/apps/GridBattle";
+import Weather from "./pages/apps/Weather";
 import HorrorGame from "./pages/games/HorrorGame";
 import About from "./pages/About";
 
@@ -29,6 +30,7 @@ function App() {
           <Route path="/apps" element={<Apps />} />
           <Route path="/apps/sorting" element={<Sorting />} />
           <Route path="/apps/grid-battle" element={<GridBattle />} />
+          <Route path="/apps/weather" element={<Weather />} />
           <Route path="/games/horror-game" element={<HorrorGame />} />
           <Route path="/about" element={<About />} />
         </Routes>
