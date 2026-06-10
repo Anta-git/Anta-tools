@@ -4,6 +4,9 @@
 /** Number of rows and columns in the battle grid. */
 export const GRID_SIZE = 30;
 
+/** Fraction of cells that start as impassable walls. */
+export const WALL_DENSITY = 0.12;
+
 /** Tailwind color classes for each player, indexed by PlayerId. */
 export const PLAYER_COLORS = [
   "bg-sky-500",     // Player 0 — top-left
