@@ -2,7 +2,19 @@
   "permissions": {
     "allow": [
       "Bash(npx tsc:*)",
-      "Bash(npx eslint:*)"
+      "Bash(npx eslint:*)",
+      "Bash(git -C \"D:\\\\Projects\\\\my-personal-hub\" log --oneline -15)",
+      "Bash(git -C \"D:\\\\Projects\\\\my-personal-hub\" branch -a)",
+      "Bash(git rm *)",
+      "Bash(rmdir src/data)",
+      "Bash(npm run *)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(git add *)",
+      "Bash(git commit -m 'Implement grid battle simulation with four competing algorithms *)",
+      "Bash(git commit -m 'Fix weather units and add missing apps page links *)",
+      "Bash(git commit -m 'Add 404 page, navbar active states, per-page layout containers *)",
+      "Bash(git commit -m 'Polish sorting visualizer controls and stop behavior *)",
+      "Bash(git commit *)"
     ]
   }
 }
