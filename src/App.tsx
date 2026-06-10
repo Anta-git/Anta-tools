@@ -16,14 +16,16 @@ import GridBattle from "./pages/apps/GridBattle";
 import Weather from "./pages/apps/Weather";
 import HorrorGame from "./pages/games/HorrorGame";
 import About from "./pages/About";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
     <div className="min-h-screen flex flex-col bg-zinc-950 text-zinc-200">
       <Navbar />
 
-      {/* All page content renders inside this centered column. */}
-      <main className="flex-1 max-w-2xl mx-auto px-6 py-12">
+      {/* Each page declares its own width container — narrow text pages
+          use max-w-2xl while visualization pages need max-w-4xl. */}
+      <main className="flex-1">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/games" element={<Games />} />
@@ -33,6 +35,7 @@ function App() {
           <Route path="/apps/weather" element={<Weather />} />
           <Route path="/games/horror-game" element={<HorrorGame />} />
           <Route path="/about" element={<About />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
 
