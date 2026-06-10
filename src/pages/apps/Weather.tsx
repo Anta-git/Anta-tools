@@ -1,4 +1,8 @@
-import { useCallback, useEffect, useState } from "react";
+/**
+ * Weather page — live current conditions for a handful of Missouri
+ * cities, fetched from the free Open-Meteo API (no API key needed).
+ */
+import { useEffect, useState } from "react";
 
 const CITIES = [
   { name: "Kansas City", lat: 38.88, lon: -94.35 },
@@ -16,40 +20,73 @@ interface CurrentWeather {
   is_day: number;
 }
 
+/**
+ * Map an Open-Meteo WMO weather code to a short human-readable label.
+ * See https://open-meteo.com/en/docs — "WMO Weather interpretation codes".
+ */
+function describeWeatherCode(code: number): string {
+  if (code === 0) return "Clear";
+  if (code === 1) return "Mostly Clear";
+  if (code === 2) return "Partly Cloudy";
+  if (code === 3) return "Overcast";
+  if (code <= 48) return "Fog";
+  if (code <= 57) return "Drizzle";
+  if (code <= 67) return "Rain";
+  if (code <= 77) return "Snow";
+  if (code <= 82) return "Showers";
+  if (code <= 86) return "Snow Showers";
+  return "Thunderstorm";
+}
+
 export default function Weather() {
   const [selectedCity, setSelectedCity] = useState(CITIES[0]);
   const [weatherData, setWeatherData] = useState<CurrentWeather | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchWeather = useCallback(async (lat: number, lon: number) => {
-    setLoading(true);
-    setError(null);
-    try {
-      // Open-Meteo API for current weather at a given latitude and longitude. Does not require an API key.
-      const response = await fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true`,
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch weather data");
-      }
-      const data = await response.json();
-
-      //Expecting data.current_weather response to include temperature, windspeed, etc.
-      //see https://open-meteo.com/en/docs for details on the API response structure
-      setWeatherData(data.current_weather);
-    } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "An unknown error occurred",
-      );
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
+  // Re-fetch whenever the selected city changes. The AbortController in
+  // the cleanup cancels any in-flight request so a slow response for a
+  // previously selected city can't overwrite the current one.
   useEffect(() => {
-    fetchWeather(selectedCity.lat, selectedCity.lon);
-  }, [selectedCity, fetchWeather]);
+    const controller = new AbortController();
+
+    async function fetchWeather() {
+      setLoading(true);
+      setError(null);
+      try {
+        // Units are requested explicitly so the display labels (°F / mph)
+        // always match — Open-Meteo defaults to °C and km/h otherwise.
+        const response = await fetch(
+          `https://api.open-meteo.com/v1/forecast?latitude=${String(selectedCity.lat)}&longitude=${String(selectedCity.lon)}` +
+            `&current_weather=true&temperature_unit=fahrenheit&wind_speed_unit=mph`,
+          { signal: controller.signal },
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch weather data");
+        }
+        const data = (await response.json()) as {
+          current_weather?: CurrentWeather;
+        };
+        if (!data.current_weather) {
+          throw new Error("Unexpected API response shape");
+        }
+        setWeatherData(data.current_weather);
+        setLoading(false);
+      } catch (err) {
+        // An abort just means the user picked another city — ignore it.
+        if (err instanceof DOMException && err.name === "AbortError") return;
+        setError(
+          err instanceof Error ? err.message : "An unknown error occurred",
+        );
+        setLoading(false);
+      }
+    }
+
+    void fetchWeather();
+    return () => {
+      controller.abort();
+    };
+  }, [selectedCity]);
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-12">
@@ -86,30 +123,24 @@ export default function Weather() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div className="bg-zinc-800 rounded-xl p-6">
             <p className="text-zinc-400 text-sm mb-1">Temperature</p>
-            <p className="text-4xl font-light">{weatherData.temperature}°F</p>
+            <p className="text-4xl font-light">
+              {Math.round(weatherData.temperature)}°F
+            </p>
           </div>
           <div className="bg-zinc-800 rounded-xl p-6">
             <p className="text-zinc-400 text-sm mb-1">Wind Speed</p>
-            <p className="text-4xl font-light">{weatherData.windspeed} mph</p>
+            <p className="text-4xl font-light">
+              {Math.round(weatherData.windspeed)} mph
+            </p>
           </div>
           <div className="bg-zinc-800 rounded-xl p-6">
             <p className="text-zinc-400 text-sm mb-1">Condition</p>
             <p className="text-4xl font-light">
-              {weatherCode(weatherData.weathercode)}
+              {describeWeatherCode(weatherData.weathercode)}
             </p>
           </div>
         </div>
       )}
     </div>
   );
-}
-
-function weatherCode(code: number): string {
-  if (code === 0) return "Clear";
-  if (code <= 3) return "Cloudy";
-  if (code <= 48) return "Fog";
-  if (code <= 67) return "Rain";
-  if (code <= 77) return "Snow";
-  if (code <= 82) return "Showers";
-  return "Storm";
 }
