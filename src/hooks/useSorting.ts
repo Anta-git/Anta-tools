@@ -100,23 +100,25 @@ export function useSorting() {
 
     // Celebration sweep: light each bar gold from left to right
     for (let i = 0; i < finalValues.length; i++) {
-        if (!signal.aborted) {
-        setBars((prev) => {
-          const next = [...prev];
-          next[i] = { ...next[i], isSorted: false, isCelebrating: true };
-          return next;
-        });
-        if (!isMutedRef.current) playTone(finalValues[i]);
-        await new Promise((r) => setTimeout(r, 20));
-      }
+      if (signal.aborted) break;
+      setBars((prev) => {
+        const next = [...prev];
+        next[i] = { ...next[i], isSorted: false, isCelebrating: true };
+        return next;
+      });
+      if (!isMutedRef.current) playTone(finalValues[i]);
+      await new Promise((r) => setTimeout(r, 20));
     }
 
     setIsSorting(false);
   }, [isSorting, selectedAlgorithm, bars]);
 
-  /** Immediately cancel the running sort. */
+  /** Immediately cancel the running sort and clear operation highlights. */
   const stopSort = useCallback(() => {
     abortControllerRef.current?.abort();
+    setBars((prev) =>
+      prev.map((bar) => ({ ...bar, isComparing: false, isSwapping: false })),
+    );
     setIsSorting(false);
   }, []);
 

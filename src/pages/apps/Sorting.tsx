@@ -84,15 +84,17 @@ export default function Sorting() {
           )}
         </select>
 
-        {/* Array size — regenerates immediately on change */}
+        {/* Array size — the hook regenerates the array automatically
+            whenever the size changes */}
         <div className="flex items-center gap-3 ml-auto">
-          <label className="text-sm text-zinc-400">Size:</label>
+          <label htmlFor="array-size" className="text-sm text-zinc-400">Size:</label>
           <input
+            id="array-size"
             type="range"
             min="10"
             max="100"
             value={arraySize}
-            onChange={(e) => { setArraySize(Number(e.target.value)); generateArray(); }}
+            onChange={(e) => { setArraySize(Number(e.target.value)); }}
             disabled={isSorting}
             className="w-32 accent-sky-500 disabled:opacity-50"
           />
@@ -101,8 +103,9 @@ export default function Sorting() {
 
         {/* Step delay — adjustable mid-sort via ref (no restart needed) */}
         <div className="flex items-center gap-3">
-          <label className="text-sm text-zinc-400">Delay:</label>
+          <label htmlFor="step-delay" className="text-sm text-zinc-400">Delay:</label>
           <input
+            id="step-delay"
             type="range"
             min="1"
             max="300"
@@ -118,7 +121,7 @@ export default function Sorting() {
           Each bar's height is proportional to its value. Colors indicate
           the current operation: rose = comparing, orange = swapping,
           emerald = sorted, yellow = celebration sweep. */}
-      <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-8 min-h-100" style={{ height: maxHeight + 64 }}>
+      <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-8" style={{ height: maxHeight + 64 }}>
         <div className="flex items-end gap-px w-full" style={{ height: maxHeight }}>
           {bars.map((bar, index) => {
             const heightPercent = (bar.value / BAR_VALUE_MAX) * 100;
@@ -146,7 +149,7 @@ export default function Sorting() {
           <strong>{sortRegistry[selectedAlgorithm].label}</strong>
         </p>
         <p>Time Complexity: {sortRegistry[selectedAlgorithm].timeComplexity} • Space Complexity: {sortRegistry[selectedAlgorithm].spaceComplexity}</p>
-        <p>-Assuming worse case scenario</p>
+        <p>(worst-case complexities shown)</p>
       </div>
     </div>
   );
