@@ -3,33 +3,16 @@
  * algorithms (BFS, DFS, Random Walk, Greedy) expand from their corners
  * and compete to own the most cells.
  *
- * Currently sets up the grid and starting positions; algorithm execution
- * is not yet wired in.
+ * Purely presentational — all simulation state and logic live in the
+ * useGridBattle hook and the gridBattleEngine generator.
  */
-import { useState, useCallback } from "react";
+import { useGridBattle } from "../../hooks/useGridBattle";
 import { GRID_SIZE, PLAYER_COLORS } from "../../types/gridBattle";
-import type { Cell, PlayerId } from "../../types/gridBattle";
-
-/** Build a fresh grid with all four players placed in their corners. */
-function createGrid(): Cell[][] {
-  const grid: Cell[][] = Array.from({ length: GRID_SIZE }, () =>
-    Array.from({ length: GRID_SIZE }, () => ({ owner: null, isWall: false }))
-  );
-
-  // Each player starts in a different corner of the grid.
-  const corners: [number, number][] = [
-    [0, 0],                           // Player 0 — top-left
-    [0, GRID_SIZE - 1],               // Player 1 — top-right
-    [GRID_SIZE - 1, 0],               // Player 2 — bottom-left
-    [GRID_SIZE - 1, GRID_SIZE - 1],   // Player 3 — bottom-right
-  ];
-
-  corners.forEach(([row, col], i) => {
-    grid[row][col].owner = i as PlayerId;
-  });
-
-  return grid;
-}
+import type { Cell } from "../../types/gridBattle";
+import {
+  gridBattleRegistry,
+  PLAYER_ALGORITHMS,
+} from "../../components/grid-battle/gridBattleRegistry";
 
 /** Map a cell's state to its Tailwind background color class. */
 function cellColor(cell: Cell): string {
@@ -39,17 +22,28 @@ function cellColor(cell: Cell): string {
 }
 
 export default function GridBattle() {
-  const [grid, setGrid] = useState(createGrid);
+  const {
+    grid,
+    scores,
+    isRunning,
+    isFinished,
+    speed,
+    setSpeed,
+    startBattle,
+    stopBattle,
+    resetGrid,
+  } = useGridBattle();
 
-  const resetGrid = useCallback(() => {
-    setGrid(createGrid());
-  }, []);
+  const topScore = Math.max(...scores);
+  const isTie = scores.filter((s) => s === topScore).length > 1;
+  const winner = gridBattleRegistry[PLAYER_ALGORITHMS[scores.indexOf(topScore)]];
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-12">
       <h1 className="text-4xl font-light mb-4">Grid Battle</h1>
       <p className="text-zinc-400 mb-10">
-        Four algorithms compete to claim the most territory on a grid.
+        Four algorithms expand from their corners and compete to claim the most
+        territory. Gray cells are walls they have to route around.
       </p>
 
       {/* ── Controls ── */}
@@ -60,7 +54,66 @@ export default function GridBattle() {
         >
           Reset
         </button>
+        <button
+          onClick={stopBattle}
+          disabled={!isRunning}
+          className="px-6 py-2 bg-red-800 hover:bg-red-700 rounded-md transition-colors disabled:opacity-50"
+        >
+          Stop
+        </button>
+        <button
+          onClick={() => { void startBattle(); }}
+          disabled={isRunning}
+          className="px-6 py-2 bg-sky-600 hover:bg-sky-500 rounded-md transition-colors disabled:opacity-50 font-medium"
+        >
+          {isRunning ? "Battling..." : "Start Battle"}
+        </button>
+
+        {/* Round delay — adjustable mid-battle via ref (no restart needed) */}
+        <div className="flex items-center gap-3 ml-auto">
+          <label htmlFor="round-delay" className="text-sm text-zinc-400">Delay:</label>
+          <input
+            id="round-delay"
+            type="range"
+            min="1"
+            max="200"
+            value={speed}
+            onChange={(e) => { setSpeed(Number(e.target.value)); }}
+            className="w-32 accent-sky-500"
+          />
+          <span className="text-sm w-12 text-zinc-400">{speed}ms</span>
+        </div>
       </div>
+
+      {/* ── Scoreboard ── */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+        {PLAYER_ALGORITHMS.map((key, i) => (
+          <div
+            key={key}
+            className={`bg-zinc-900 border rounded-lg p-4 transition-colors ${
+              isFinished && scores[i] === topScore
+                ? "border-yellow-400"
+                : "border-zinc-800"
+            }`}
+          >
+            <div className="flex items-center gap-2 mb-1">
+              <span className={`w-3 h-3 rounded-sm ${PLAYER_COLORS[i]}`} />
+              <span className="text-sm text-zinc-300">
+                {gridBattleRegistry[key].label}
+              </span>
+            </div>
+            <p className="text-2xl font-light">{scores[i]}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Winner announcement once the board is full */}
+      <p className="mb-6 text-lg h-7">
+        {isFinished &&
+          (isTie
+            ? "It's a tie!"
+            : `${winner.label} wins with ${String(topScore)} cells!`)}
+      </p>
 
       {/* ── Grid ──
           Rendered as a CSS grid; each cell is a tiny colored square.
@@ -79,6 +132,18 @@ export default function GridBattle() {
             />
           ))
         )}
+      </div>
+
+      {/* Strategy explanations pulled from the registry so they stay in sync */}
+      <div className="mt-10 text-sm text-zinc-400 max-w-2xl space-y-2">
+        {PLAYER_ALGORITHMS.map((key) => (
+          <p key={key}>
+            <strong className="text-zinc-300">
+              {gridBattleRegistry[key].label}:
+            </strong>{" "}
+            {gridBattleRegistry[key].description}
+          </p>
+        ))}
       </div>
     </div>
   );

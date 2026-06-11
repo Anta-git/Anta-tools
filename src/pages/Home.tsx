@@ -22,7 +22,7 @@ export default function Home() {
           >
             Games
           </Link>{" "}
-          — playable Unity experiments I've built
+          — game experiments and concepts I've built
         </p>
         <p>
           <Link

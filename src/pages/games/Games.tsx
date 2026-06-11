@@ -1,11 +1,13 @@
+// Index page for the Games section — a directory of playable games.
 import { Link } from 'react-router-dom';
 
-// Games open in a new tab so the player doesn't lose their place on the site.
 export default function Games() {
   return (
-    <div>
-      <h2 className="text-3xl mb-8">Games</h2>
-      <p className="mb-8">Here are the small Unity WebGL games I've made.</p>
+    <div className="max-w-2xl mx-auto px-6 py-12">
+      <h1 className="text-4xl font-light mb-6">Games</h1>
+      <p className="text-zinc-400 mb-10">
+        Small games and game concepts I've made.
+      </p>
 
       <div className="space-y-8 text-lg">
         <div>
@@ -16,7 +18,8 @@ export default function Games() {
             Horror Game Concept
           </Link>
           <p className="text-sm text-zinc-500 mt-1">
-            Small concept for a horror idle game.
+            UI mockup for a horror idle game — explore, manage resources,
+            decode signals.
           </p>
         </div>
       </div>
